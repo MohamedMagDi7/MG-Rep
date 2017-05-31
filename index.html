@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ 
+   <meta charset="UTF-8">
+    <title>Title</title>
+
+    
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  
+  <script type="text/javascript">
+        function SignUp()
+
+   
+     {
+        $.ajax({
+        url:'/signup'
+        type:'POST'
+        data: $("#login-form").serialize(),
+        success:function(data){
+        alert("succsseded signup");
+        }
+        });
+
+        }
+
+        function Login()
+
+        {
+        $.ajax({
+        url:'/login'
+        type:'POST'
+        data: $("#login-form").serialize(),
+        success:function(data){
+        alert("succsseded login");
+        }
+        });
+
+        }
+
+    </script>
+    <script></script>
+
+    
+<style>
+
+   
+ .button {
+    border-radius: 14px;
+    background-color: gray;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button1 {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.button2:hover {
+	color: white;
+	background-color: #555555;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}      
+
+  body {
+              background-image:url(https://cdn.pixabay.com/photo/2012/03/01/01/34/winter-20234_960_720.jpg);
+                background-color: darkgray;
+                background-repeat: no-repeat;
+                background-size:cover;
+                }
+
+        #login-form{
+        margin-top: 10em;
+        margin-left: 28em;
+        };
+
+        #login-form div{
+        text-align: center;
+        }
+
+        #login-form input{
+        margin: .5em 1em;
+        }
+
+        #error{
+        text-align: center;
+        color: red;
+        margin-top: 1em;
+        }
+    </style>
+</head>
+<body>
+<form id="login-form" method="POST" action="/login">
+    <div>
+        <label>User Name:</label>
+        <input type="email" name="username" required="enabled" placeholder="Enter Username...">
+    </div>
+    <div>
+        <label>Password:</label>
+        <input type="password" name="password" required="enabled" placeholder="Enter Password...">
+    </div>
+    <div style="margin-left: 6em;">
+        <input 
+class="button button2" type="submit" value="Register" name="register">
+        <input class="button button2" type="submit" value="Log In" name="login">
+    </div>
+</form>
+
+</body>
+</html>

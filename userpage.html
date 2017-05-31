@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome {{.UserName}}</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
+    <script>
+
+    function AppendContact(contact){
+       $("#view-contacts").append("<tr id='contact-row-" + contact.Id + "'> <td>" + contact.FirstName + "</td> <td>" + contact.LastName +
+         "</td> <td>" + contact.Email + "</td> <td>" + contact.PhoneNumber +","+
+         "</td> <td><button class='delete-btn' onclick='Delete(" + contact.Id + ")'>Delete</button></td> </tr>");
+
+    }
+
+    function Logout()
+    {
+
+        $.ajax({
+        type: 'GET',
+        url: '/logout'
+        });
+    }
+</script>
+
+    <script>
+var count=1;
+    function AboutUs()
+    {
+    $("#about").show();
+    $("#Contacts-Page").hide();
+    $("#contactUs").hide();
+    }
+
+    function ContactUs()
+    {
+    $("#contactUs").show();
+    $("#Contacts-Page").hide();
+    $("#about").hide();
+    }
+
+    function Show_Contacts()
+    {
+    $("#user_page").hide();
+    $("#contact-table").show();
+    }
+
+    function New_Contact()
+    {
+    $("#contact-table").hide();
+    $("#user_page").show();
+    }
+
+    function add_number()
+    {
+
+var html_text = document.createTextNode("Number: ");
+var html_element =document.createElement( "input");
+var att = document.createAttribute("name");
+count= count+1;
+att.value='phone' + count;
+html_element.setAttributeNode(att); 
+     var theDiv =  document.getElementById("numbers");
+theDiv.appendChild(html_text);
+theDiv.appendChild(html_element);
+
+
+    }
+</script>
+<style>
+     .button {
+    background-color: gray;
+    border-radius: 14px;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+}
+
+.button1 {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.button2:hover {
+	color: white;
+	background-color: #555555;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}      
+#mybody {
+                background-image:url(https://cdn.pixabay.com/photo/2012/03/01/01/34/winter-20234_960_720.jpg);
+                background-color: darkgray;
+                background-repeat: no-repeat;
+                 background-size: cover;
+                }
+
+       .link{
+         cursor:pointer;
+        padding: .5em;
+        color: gray;
+        text-decoration:none;
+        text-shadow: 1px 1px 1px #555;
+        }
+
+  
+.link:hover{
+color:black;
+}
+
+#link{
+padding: .5em; margin-right: 10em; color: gray; text-decoration:none;
+     text-shadow: 1px 1px 1px #555;
+}
+
+#link:hover{
+color: black;
+}
+   .delete-btn{
+        color: white;
+        background-color: #d9534f;
+        border-color: #d43f3a;
+        border-radius: 8px;
+        }
+</style>
+</head>
+<body id="mybody" background="30.jpg">
+
+
+
+<div id="User" align="left" >You are logged in as: <b style="color: Green; text-shadow: 1px 1px 1px #555;">{{.UserName}}</b></div>
+<div id="links" align="right" style="margin-top: 2em; " >
+    <a href="/userpage" class="link" >Profile</a>
+    <a class="link" onclick="AboutUs()" >About Us</a>
+    <a class="link" onclick="ContactUs()">Contact Us</a>
+    <a href="/logout" id="link" onclick="Logout()" >Logout</a>
+
+</div>
+<br><br><br><br>
+<div id="about" align="middle" style="display: none;">
+    <p style="color: black; font-size: 30px;
+        font-weight: bold;">You Already know about Us!</p>
+</div>
+
+
+<div id="contactUs" align="middle" style="display: none;">
+    <p style="color: black; font-size: 30px;
+        font-weight: bold;"> You Already in contact with Us! </p>
+</div>
+
+<div id="Contacts-Page" >
+<div id="contact_btn" align="middle">
+          <button class="button button2" name="Add_Contact" value="New_Contact" onclick="New_Contact()" >New Contact</button>
+    &emsp;&emsp;&emsp;&emsp;<button class="button button2" name="View_Contacts" value="View_Contacts"  onclick="Show_Contacts()" >View Contacts</button>
+</div>
+
+
+<div id="user_page" align="middle">
+    <h1 style="color: yellow; font-size: 28px;
+        font-weight: bold; text-shadow: 1px 1px 1px #555;">Enter new contact!</h1>
+    <form id="contact-form" onsubmit="AddContact(); return false">
+            <p><label>First Name    : &emsp;&emsp;<input type="text" name="first-name" ></label></p>
+            <p><label>Last Name     : &emsp;&emsp;<input type="text" name="last-name" ></label></p>
+            <p><label>E-mail Address : <input type=email name="email" ></label></p>
+          <p>&emsp;&emsp;&emsp;&emsp;&emsp;<label>Phone Number  : <input name="phone1" ></label>
+            <button class="button button2" name="add-number" value="add_number"  onclick="add_number(); return false" > + </button></p>
+<span id="numbers">
+
+</span>
+<br>
+             <input class="button button2" type="submit" value="Add-Contact"  >
+        </form>
+</div>
+<br>
+<div id="contact-table" style="display: none;">
+    <table width="100%">
+        <thead>
+        <tr style="text-align: left;">
+            <th width="20%" style="color: darkblue;">First Name</th>
+            <th width="20%" style="color: darkblue;">Last Name</th>
+            <th width="30%" style="color: darkblue;">E-mail</th>
+            <th width="20%" style="color: darkblue;">Phone Number</th>
+            <th width="10%" ></th>
+        </tr>
+        </thead>
+        <tbody id="view-contacts">
+        {{range .Contacts}}
+        <tr id="contact-row-{{.Id}}">
+            <td>{{.FirstName}}</td>
+            <td>{{.LastName}}</td>
+            <td>{{.Email}}</td>
+            <td> {{range .PhoneNumber}}
+	                 {{.}},
+                {{end}}</td>
+
+            <td> <button class="delete-btn" onclick="Delete({{.Id}})" >Delete</button></td>
+        </tr>
+        {{end}}
+
+
+        </tbody>
+
+
+    </table>
+</div>
+</div>
+
+
+
+
+<script>
+     function AddContact()
+    {
+
+       $.ajax({
+            url: '/addcontact',
+            type: 'POST',
+            data: $("#contact-form").serialize(),
+            success: function(data){
+                $("#contact-form").trigger("reset");
+                var contact= JSON.parse(data);
+                if(!contact) {alert("failed parsing"); return;}
+                else
+                 {
+                 AppendContact(contact);
+                 }
+            }
+     });
+    }
+
+function Delete(Id)
+    {
+  
+    $.ajax({
+
+           url: '/delete?id=' +Id ,
+           type: 'GET' ,
+           success: $("#contact-row-"+Id).remove()
+    });
+
+
+    }
+</script>
+
+
+
+</body>
+</html>
