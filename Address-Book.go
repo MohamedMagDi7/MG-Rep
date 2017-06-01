@@ -159,6 +159,8 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 func UserPage(w http.ResponseWriter, r *http.Request) {
 	templates := template.Must(template.ParseFiles("userpage.html"))
 	User.Contacts = []Contact{}
@@ -276,7 +278,7 @@ func main() {
 	mux.HandleFunc("/", Check)
 	mux.HandleFunc("/home", HomePage)
 	mux.HandleFunc("/login", Login).Methods("POST")
-	mux.HandleFunc("/userpage", UserPage)
+	mux.HandleFunc("/userpage", UserPage).Methods("GET")
 	mux.HandleFunc("/addcontact", AddContact)
 	mux.HandleFunc("/logout", Logout)
 	mux.HandleFunc("/delete", Delete)

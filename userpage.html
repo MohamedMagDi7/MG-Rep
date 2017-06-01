@@ -72,6 +72,21 @@ theDiv.appendChild(html_element);
     }
 </script>
 <style>
+
+table, td, th {
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 15px;
+}
+
      .button {
     background-color: gray;
     border-radius: 14px;
@@ -182,7 +197,7 @@ color: black;
 </div>
 <br>
 <div id="contact-table" style="display: none;">
-    <table width="100%">
+    <table>
         <thead>
         <tr style="text-align: left;">
             <th width="20%" style="color: darkblue;">First Name</th>
@@ -231,6 +246,7 @@ color: black;
                  {
                  AppendContact(contact);
                  }
+
             }
      });
     }
