@@ -11,8 +11,9 @@
 
     function AppendContact(contact){
        $("#view-contacts").append("<tr id='contact-row-" + contact.Id + "'> <td>" + contact.FirstName + "</td> <td>" + contact.LastName +
-         "</td> <td>" + contact.Email + "</td> <td>" + contact.PhoneNumber +","+
-         "</td> <td><button class='delete-btn' onclick='Delete(" + contact.Id + ")'>Delete</button></td> </tr>");
+         "</td> <td>" + contact.Email + "</td> <td>" + contact.PhoneNumber+
+         "</td> <td><button class='delete-btn' onclick='DeleteContact(" + contact.Id + ")'>Delete</button></td> </tr>");
+         alert("Appendded");
 
     }
 
@@ -100,7 +101,7 @@ theDiv.appendChild(html_element);
                 background-image:url(https://cdn.pixabay.com/photo/2012/03/01/01/34/winter-20234_960_720.jpg);
                 background-color: darkgray;
                 background-repeat: no-repeat;
-                 background-size: cover;
+                background-size:cover;
                 }
 
        .link{
@@ -197,9 +198,7 @@ color: black;
             <td>{{.FirstName}}</td>
             <td>{{.LastName}}</td>
             <td>{{.Email}}</td>
-            <td> {{range .PhoneNumber}}
-	                 {{.}},
-                {{end}}</td>
+            <td>{{range .PhoneNumber}} {{.}} <br>{{end}}</td>
 
             <td> <button class="delete-btn" onclick="Delete({{.Id}})" >Delete</button></td>
         </tr>
@@ -238,7 +237,6 @@ color: black;
 
 function Delete(Id)
     {
-  
     $.ajax({
 
            url: '/delete?id=' +Id ,
