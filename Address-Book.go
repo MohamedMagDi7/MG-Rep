@@ -14,12 +14,17 @@ import (
 
 	"encoding/json"
 )
+type PhoneNum struct {
+	ID int
+	Phonenumber string
+
+}
  type Contact struct{
 	 Id int
 	 FirstName string
 	 LastName string
 	 Email string
-	 PhoneNumber []string
+	 PhoneNumber []PhoneNum
 
  }
 type User_Contancts struct {
@@ -121,7 +126,40 @@ func Login(w http.ResponseWriter, r *http.Request){
 			return
 		}
 	}
+
+	var databaseUsername string
+	var databasePassword string
+
+	err = db.QueryRow("SELECT username, password FROM users WHERE username=?", username).Scan(&databaseUsername, &databasePassword)
+	if err == sql.ErrNoRows {
+
+		fmt.Println("no such user")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+
+	} else if err != nil {
+
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(databasePassword), []byte(password))
+	// If wrong password redirect to the login
+	if err != nil {
+		fmt.Println("wrong password")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	} else {
+		fmt.Println("password match")
+		// If the login succeeded
+		session , _ := store.Get(r,"CurrentSession")
+		session.Values["user"]=username
+		session.Save(r,w)
+		http.Redirect(w, r, "/userpage", 301)
+		return
+	}
 }
+
 
 func Delete(w http.ResponseWriter, r *http.Request){
 	_ ,err := db.Exec("delete from contact where contactID = ?",r.FormValue("id"))
@@ -132,6 +170,19 @@ func Delete(w http.ResponseWriter, r *http.Request){
 		return
 	}
 	fmt.Println("row Deleted")
+}
+
+
+func DeleteNum(w http.ResponseWriter, r *http.Request){
+	fmt.Println(r.FormValue("id"))
+	_ ,err := db.Exec("delete from phonenumbers where id = ?",r.FormValue("id"))
+
+	if err !=nil{
+		fmt.Println("DB error")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Println("number Deleted")
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 func Check(w http.ResponseWriter, r *http.Request) {
@@ -187,7 +238,7 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		var c Contact
 		rows.Scan(&c.Id, &c.FirstName, &c.LastName , &c.Email )
 
-		res, err := db.Query("select phonenumber from phonenumbers where contact_id= ?",c.Id)
+		res, err := db.Query("select phonenumber,id from phonenumbers where contact_id= ?",c.Id)
 		if err!=nil{
 			fmt.Println("DB error")
 			http.Error(w,err.Error(),http.StatusInternalServerError)
@@ -195,9 +246,9 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for res.Next() {
-			var N string
-			res.Scan(&N)
-			c.PhoneNumber = append(c.PhoneNumber, N)
+			Phone := PhoneNum{}
+			res.Scan(&Phone.Phonenumber , &Phone.ID)
+			c.PhoneNumber = append(c.PhoneNumber, Phone)
 
 		}
 		User.Contacts = append(User.Contacts, c)
@@ -233,12 +284,16 @@ func AddContact(w http.ResponseWriter, r *http.Request) {
 	i := 1
 	for r.FormValue("phone" + strconv.Itoa(i)) != "" {
 		str := r.FormValue("phone" + strconv.Itoa(i))
-		c.PhoneNumber = append(c.PhoneNumber, str)
 		_, err := db.Exec("insert into phonenumbers values(?,?,?)", nil, str , id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		row := db.QueryRow("select MAX(id) from phonenumbers")
+		var id int
+		row.Scan(&id)
+		Phone := PhoneNum{Phonenumber:str , ID:id}
+		c.PhoneNumber = append(c.PhoneNumber, Phone)
 		i++
 	}
 
@@ -278,13 +333,15 @@ func main() {
 	mux.HandleFunc("/", Check)
 	mux.HandleFunc("/home", HomePage)
 	mux.HandleFunc("/login", Login).Methods("POST")
+	//mux.HandleFunc("/signup", Login).Methods("POST")
 	mux.HandleFunc("/userpage", UserPage).Methods("GET")
 	mux.HandleFunc("/addcontact", AddContact)
 	mux.HandleFunc("/logout", Logout)
 	mux.HandleFunc("/delete", Delete)
+	mux.HandleFunc("/deletenum", DeleteNum)
 	n:= negroni.Classic()
 	n.UseHandler(mux)
-	n.Run(":8080")
+	n.Run(":9000")
 	//mux.ListenAndServe(":8080", nil)
 }
 
